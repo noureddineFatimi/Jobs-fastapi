@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, LargeBinary, String, Text, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 from  sqlalchemy.orm import relationship
 from datetime import datetime
 from database import Base
@@ -40,7 +40,7 @@ class OffreEmploi(Base):
     ville = relationship("Ville", back_populates = "offres_emploi")
     secteur_activite = relationship("SecteurActivite", back_populates = "offres_emploi")
     fonction = relationship("Fonction", back_populates = "offres_emploi")
-    competences = relationship("CompetencesOffre", back_populates = "offre")
+    competences = relationship("Competence", back_populates = "offre")
     candidatures = relationship("Candidature", back_populates = "offre")
 
 class User(Base):
@@ -57,24 +57,15 @@ class User(Base):
     role = relationship("Role", back_populates = "users")
     offres_emploi = relationship("OffreEmploi", back_populates = "user")
 
-class Competence(Base):
+class Competence(Base): 
     __tablename__ = "competences"
-    
+
     id_competence = Column(Integer, primary_key = True, index = True)
     nom_competence = Column(String)
-
-    offres = relationship("CompetencesOffre", back_populates = "competence")
-
-class CompetencesOffre(Base): 
-    __tablename__ = "competence_offre"
-
-    id_competence_offre = Column(Integer, primary_key = True, index = True)
-    id_offre = Column(Integer, ForeignKey("offres_emploi.id_offre"), )
-    id_competence = Column(Integer, ForeignKey("competences.id_competence"))
     niveau = Column(String)
-
+    id_offre = Column(Integer, ForeignKey("offres_emploi.id_offre") )
+    
     offre = relationship("OffreEmploi", back_populates = "competences")
-    competence = relationship("Competence", back_populates = "offres")
 
 class Fonction(Base):
     __tablename__ = "fonctions"
@@ -123,7 +114,6 @@ class File(Base):
     file_path = Column(String)
     file_name = Column(String)
     file_type = Column(String)
-    file = Column(LargeBinary)
 
     candidature = relationship("Candidature", back_populates = "cv")
     entreprise = relationship("Entreprise", back_populates = "logo") 
